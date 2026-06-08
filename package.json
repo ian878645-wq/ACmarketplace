@@ -1,0 +1,12 @@
+{
+  "name": "ac-marketplace",
+  "version": "1.0.0",
+  "description": "A university student marketplace for buying and selling items",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000"
+  },
+  "keywords": ["marketplace", "student", "university"],
+  "author": "",
+  "license": "MIT"
+}
