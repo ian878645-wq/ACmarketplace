@@ -148,6 +148,19 @@ textarea {
 #ads-container {
     display: grid;
     gap: 1rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 850px) {
+    #ads-container {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
+    #ads-container {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
 }
 
 .ad-card {
