@@ -1,12 +1,16 @@
 {
   "name": "ac-marketplace",
   "version": "1.0.0",
-  "description": "A university student marketplace for buying and selling items",
-  "main": "index.html",
+  "description": "A university student marketplace with backend storage",
+  "main": "server.js",
   "scripts": {
-    "start": "python -m http.server 8000"
+    "start": "node server.js"
   },
-  "keywords": ["marketplace", "student", "university"],
+  "dependencies": {
+    "express": "^4.18.4",
+    "express-session": "^1.17.3"
+  },
+  "keywords": ["marketplace", "student", "university", "backend"],
   "author": "",
   "license": "MIT"
 }

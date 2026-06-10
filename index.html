@@ -91,6 +91,14 @@
                     <input type="text" id="item-location" placeholder="City or pickup area">
                 </label>
                 <label>
+                    Status
+                    <select id="item-status">
+                        <option value="selling">Selling</option>
+                        <option value="pending">Pending</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </label>
+                <label>
                     University
                     <select id="item-university">
                         <option value="">Select university</option>
@@ -153,8 +161,109 @@
                 <button id="post-ad-button">Submit Ad</button>
             </div>
             <div class="ads-list">
+                <h3>My Listings</h3>
+                <div id="my-ads-container"></div>
+            </div>
+            <div class="ads-list">
                 <h3>Active Listings</h3>
                 <div id="ads-container"></div>
+            </div>
+            <div id="edit-ad-form" class="post-form hidden">
+                <h3>Edit Item</h3>
+                <label>
+                    Item title
+                    <input type="text" id="edit-item-title" placeholder="Example: Vintage lamp">
+                </label>
+                <label>
+                    Price
+                    <input type="text" id="edit-item-price" placeholder="$25">
+                </label>
+                <label>
+                    Description
+                    <textarea id="edit-item-description" rows="4" placeholder="Describe the item..."></textarea>
+                </label>
+                <label>
+                    Location
+                    <input type="text" id="edit-item-location" placeholder="City or pickup area">
+                </label>
+                <label>
+                    Status
+                    <select id="edit-item-status">
+                        <option value="selling">Selling</option>
+                        <option value="pending">Pending</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </label>
+                <label>
+                    University
+                    <select id="edit-item-university">
+                        <option value="">Select university</option>
+                        <option value="University of Toronto">University of Toronto</option>
+                        <option value="McGill University">McGill University</option>
+                        <option value="University of British Columbia">University of British Columbia</option>
+                        <option value="McMaster University">McMaster University</option>
+                        <option value="Université de Montréal">Université de Montréal</option>
+                        <option value="University of Alberta">University of Alberta</option>
+                        <option value="University of Waterloo">University of Waterloo</option>
+                        <option value="Western University">Western University</option>
+                        <option value="University of Calgary">University of Calgary</option>
+                        <option value="Queen's University">Queen's University</option>
+                        <option value="University of Ottawa">University of Ottawa</option>
+                        <option value="Simon Fraser University">Simon Fraser University</option>
+                        <option value="Dalhousie University">Dalhousie University</option>
+                        <option value="University of Saskatchewan">University of Saskatchewan</option>
+                        <option value="Université de Sherbrooke">Université de Sherbrooke</option>
+                        <option value="York University">York University</option>
+                        <option value="University of Guelph">University of Guelph</option>
+                        <option value="Concordia University">Concordia University</option>
+                        <option value="University of Victoria">University of Victoria</option>
+                        <option value="University of Manitoba">University of Manitoba</option>
+                        <option value="Carleton University">Carleton University</option>
+                        <option value="Memorial University of Newfoundland">Memorial University of Newfoundland</option>
+                        <option value="Ontario Tech University">Ontario Tech University</option>
+                        <option value="Toronto Metropolitan University">Toronto Metropolitan University</option>
+                        <option value="University of Windsor">University of Windsor</option>
+                        <option value="Brock University">Brock University</option>
+                        <option value="University of Regina">University of Regina</option>
+                        <option value="University of New Brunswick">University of New Brunswick</option>
+                        <option value="St. Francis Xavier University">St. Francis Xavier University</option>
+                        <option value="Lakehead University">Lakehead University</option>
+                        <option value="Laurentian University">Laurentian University</option>
+                        <option value="Wilfrid Laurier University">Wilfrid Laurier University</option>
+                        <option value="University of Prince Edward Island">University of Prince Edward Island</option>
+                        <option value="Trent University">Trent University</option>
+                        <option value="Vancouver Island University">Vancouver Island University</option>
+                        <option value="Athabasca University">Athabasca University</option>
+                        <option value="Mount Allison University">Mount Allison University</option>
+                        <option value="University of Lethbridge">University of Lethbridge</option>
+                        <option value="Thompson Rivers University">Thompson Rivers University</option>
+                        <option value="University of Northern British Columbia">University of Northern British Columbia</option>
+                        <option value="OCAD University">OCAD University</option>
+                        <option value="Bishop's University">Bishop's University</option>
+                        <option value="University of Winnipeg">University of Winnipeg</option>
+                        <option value="Redeemer University">Redeemer University</option>
+                        <option value="Université Laval">Université Laval</option>
+                        <option value="Université du Québec à Montréal">Université du Québec à Montréal</option>
+                        <option value="Université du Québec à Trois-Rivières">Université du Québec à Trois-Rivières</option>
+                        <option value="Université du Québec à Chicoutimi">Université du Québec à Chicoutimi</option>
+                        <option value="Royal Roads University">Royal Roads University</option>
+                        <option value="Nipissing University">Nipissing University</option>
+                    </select>
+                </label>
+                <label>
+                    Image
+                    <input type="file" id="edit-item-image" accept="image/*">
+                </label>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="save-ad-button">Save Changes</button>
+                    <button id="cancel-edit-button" class="secondary">Cancel</button>
+                </div>
+            </div>
+            <div id="listing-detail-modal" class="listing-detail-modal hidden">
+                <div class="listing-detail-content">
+                    <button id="close-listing-detail" class="secondary">Back to Listings</button>
+                    <div id="listing-detail-container"></div>
+                </div>
             </div>
         </section>
     </main>
