@@ -1,62 +1,77 @@
 // AC Marketplace JavaScript
 
 const API_BASE_URL = '';
-const loginButton = document.getElementById('login-button');
-const registerButton = document.getElementById('register-button');
-const logoutButton = document.getElementById('logout');
-const showLoginButton = document.getElementById('show-login');
-const showRegisterButton = document.getElementById('show-register');
-const showBrowseButton = document.getElementById('show-browse');
-const showPostFormButton = document.getElementById('show-post-form');
-const landingBrowseButton = document.getElementById('landing-browse');
-const landingAccountButton = document.getElementById('landing-account');
-const landingLoginButton = document.getElementById('landing-login');
-const landingRegisterButton = document.getElementById('landing-register');
-const backToLandingAuth = document.getElementById('back-to-landing-auth');
-const accountProfile = document.getElementById('account-profile');
-const accountUsername = document.getElementById('account-username');
-const accountPhone = document.getElementById('account-phone');
-const accountEmail = document.getElementById('account-email');
-const saveAccountButton = document.getElementById('save-account-button');
-const logoutAccountButton = document.getElementById('logout-account-button');
-const backToLandingMarketplace = document.getElementById('back-to-landing-marketplace');
-const authMessage = document.getElementById('auth-message');
-const loginForm = document.getElementById('login-form');
-const registerForm = document.getElementById('register-form');
-const authPanel = document.getElementById('auth-panel');
-const marketplacePanel = document.getElementById('marketplace-panel');
-const landingPanel = document.getElementById('landing-panel');
-const currentUserLabel = document.getElementById('current-user');
-const postAdForm = document.getElementById('post-ad-form');
-const adsContainer = document.getElementById('ads-container');
-const postAdButton = document.getElementById('post-ad-button');
-const searchInput = document.getElementById('search-input');
-const searchButton = document.getElementById('search-button');
-const clearSearchButton = document.getElementById('clear-search');
-const filterUniversitySelect = document.getElementById('filter-university');
-const filterPriceSelect = document.getElementById('filter-price');
-const itemImageInput = document.getElementById('item-image');
-const itemUniversityInput = document.getElementById('item-university');
-const itemLocationInput = document.getElementById('item-location');
-const itemStatusInput = document.getElementById('item-status');
-const itemPhoneInput = document.getElementById('item-phone');
-const itemEmailInput = document.getElementById('item-email');
-const myAdsContainer = document.getElementById('my-ads-container');
-const editAdForm = document.getElementById('edit-ad-form');
-const editItemTitle = document.getElementById('edit-item-title');
-const editItemPrice = document.getElementById('edit-item-price');
-const editItemDescription = document.getElementById('edit-item-description');
-const editItemLocation = document.getElementById('edit-item-location');
-const editItemUniversity = document.getElementById('edit-item-university');
-const editItemStatus = document.getElementById('edit-item-status');
-const editItemImage = document.getElementById('edit-item-image');
-const editItemPhone = document.getElementById('edit-item-phone');
-const editItemEmail = document.getElementById('edit-item-email');
-const saveAdButton = document.getElementById('save-ad-button');
-const cancelEditButton = document.getElementById('cancel-edit-button');
-const listingDetailModal = document.getElementById('listing-detail-modal');
-const closeListingDetailButton = document.getElementById('close-listing-detail');
-const listingDetailContainer = document.getElementById('listing-detail-container');
+
+// DOM elements will be initialized after DOMContentLoaded
+let loginButton, registerButton, logoutButton, showLoginButton, showRegisterButton, showBrowseButton;
+let showPostFormButton, landingBrowseButton, landingAccountButton, landingLoginButton, landingRegisterButton;
+let backToLandingAuth, accountProfile, accountUsername, accountPhone, accountEmail, saveAccountButton;
+let logoutAccountButton, backToLandingMarketplace, authMessage, loginForm, registerForm, authPanel;
+let marketplacePanel, landingPanel, currentUserLabel, postAdForm, adsContainer, postAdButton;
+let searchInput, searchButton, clearSearchButton, filterUniversitySelect, filterPriceSelect;
+let itemImageInput, itemUniversityInput, itemLocationInput, itemStatusInput, itemPhoneInput, itemEmailInput;
+let myAdsContainer, editAdForm, editItemTitle, editItemPrice, editItemDescription, editItemLocation;
+let editItemUniversity, editItemStatus, editItemImage, editItemPhone, editItemEmail, saveAdButton;
+let cancelEditButton, listingDetailModal, closeListingDetailButton, listingDetailContainer;
+
+function initializeDOMElements() {
+    loginButton = document.getElementById('login-button');
+    registerButton = document.getElementById('register-button');
+    logoutButton = document.getElementById('logout');
+    showLoginButton = document.getElementById('show-login');
+    showRegisterButton = document.getElementById('show-register');
+    showBrowseButton = document.getElementById('show-browse');
+    showPostFormButton = document.getElementById('show-post-form');
+    landingBrowseButton = document.getElementById('landing-browse');
+    landingAccountButton = document.getElementById('landing-account');
+    landingLoginButton = document.getElementById('landing-login');
+    landingRegisterButton = document.getElementById('landing-register');
+    backToLandingAuth = document.getElementById('back-to-landing-auth');
+    accountProfile = document.getElementById('account-profile');
+    accountUsername = document.getElementById('account-username');
+    accountPhone = document.getElementById('account-phone');
+    accountEmail = document.getElementById('account-email');
+    saveAccountButton = document.getElementById('save-account-button');
+    logoutAccountButton = document.getElementById('logout-account-button');
+    backToLandingMarketplace = document.getElementById('back-to-landing-marketplace');
+    authMessage = document.getElementById('auth-message');
+    loginForm = document.getElementById('login-form');
+    registerForm = document.getElementById('register-form');
+    authPanel = document.getElementById('auth-panel');
+    marketplacePanel = document.getElementById('marketplace-panel');
+    landingPanel = document.getElementById('landing-panel');
+    currentUserLabel = document.getElementById('current-user');
+    postAdForm = document.getElementById('post-ad-form');
+    adsContainer = document.getElementById('ads-container');
+    postAdButton = document.getElementById('post-ad-button');
+    searchInput = document.getElementById('search-input');
+    searchButton = document.getElementById('search-button');
+    clearSearchButton = document.getElementById('clear-search');
+    filterUniversitySelect = document.getElementById('filter-university');
+    filterPriceSelect = document.getElementById('filter-price');
+    itemImageInput = document.getElementById('item-image');
+    itemUniversityInput = document.getElementById('item-university');
+    itemLocationInput = document.getElementById('item-location');
+    itemStatusInput = document.getElementById('item-status');
+    itemPhoneInput = document.getElementById('item-phone');
+    itemEmailInput = document.getElementById('item-email');
+    myAdsContainer = document.getElementById('my-ads-container');
+    editAdForm = document.getElementById('edit-ad-form');
+    editItemTitle = document.getElementById('edit-item-title');
+    editItemPrice = document.getElementById('edit-item-price');
+    editItemDescription = document.getElementById('edit-item-description');
+    editItemLocation = document.getElementById('edit-item-location');
+    editItemUniversity = document.getElementById('edit-item-university');
+    editItemStatus = document.getElementById('edit-item-status');
+    editItemImage = document.getElementById('edit-item-image');
+    editItemPhone = document.getElementById('edit-item-phone');
+    editItemEmail = document.getElementById('edit-item-email');
+    saveAdButton = document.getElementById('save-ad-button');
+    cancelEditButton = document.getElementById('cancel-edit-button');
+    listingDetailModal = document.getElementById('listing-detail-modal');
+    closeListingDetailButton = document.getElementById('close-listing-detail');
+    listingDetailContainer = document.getElementById('listing-detail-container');
+}
 
 let activeSearchTerm = '';
 let activeUniversityFilter = '';
@@ -701,6 +716,8 @@ async function deleteAd(adId) {
 }
 
 function initializeApp() {
+    initializeDOMElements();
+    attachEventListeners();
     toggleAuthForms(true);
     clearMessage();
     showLanding();
@@ -746,58 +763,60 @@ function attachFormShortcuts() {
     });
 }
 
-showLoginButton.addEventListener('click', () => {
-    if (currentUser) {
-        showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
-        return;
+function attachEventListeners() {
+    showLoginButton.addEventListener('click', () => {
+        if (currentUser) {
+            showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
+            return;
+        }
+        showAccountView();
+    });
+    showRegisterButton.addEventListener('click', () => {
+        if (currentUser) {
+            showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
+            return;
+        }
+        showAccountView();
+        toggleAuthForms(false);
+    });
+    showBrowseButton.addEventListener('click', showPublicBrowse);
+    landingBrowseButton.addEventListener('click', showPublicBrowse);
+    landingAccountButton.addEventListener('click', showAccountView);
+    landingLoginButton.addEventListener('click', () => {
+        if (currentUser) {
+            showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
+            return;
+        }
+        showAccountView();
+    });
+    landingRegisterButton.addEventListener('click', () => {
+        if (currentUser) {
+            showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
+            return;
+        }
+        showAccountView();
+        toggleAuthForms(false);
+    });
+    backToLandingAuth.addEventListener('click', showLanding);
+    backToLandingMarketplace.addEventListener('click', showLanding);
+    logoutButton.addEventListener('click', logoutUser);
+    saveAccountButton.addEventListener('click', saveAccountInfo);
+    logoutAccountButton.addEventListener('click', logoutUser);
+    showPostFormButton.addEventListener('click', togglePostForm);
+    loginButton.addEventListener('click', loginUser);
+    registerButton.addEventListener('click', registerUser);
+    postAdButton.addEventListener('click', postAd);
+    searchButton.addEventListener('click', performSearch);
+    clearSearchButton.addEventListener('click', clearSearch);
+    if (filterUniversitySelect) {
+        filterUniversitySelect.addEventListener('change', performSearch);
     }
-    showAccountView();
-});
-showRegisterButton.addEventListener('click', () => {
-    if (currentUser) {
-        showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
-        return;
+    if (filterPriceSelect) {
+        filterPriceSelect.addEventListener('change', performSearch);
     }
-    showAccountView();
-    toggleAuthForms(false);
-});
-showBrowseButton.addEventListener('click', showPublicBrowse);
-landingBrowseButton.addEventListener('click', showPublicBrowse);
-landingAccountButton.addEventListener('click', showAccountView);
-landingLoginButton.addEventListener('click', () => {
-    if (currentUser) {
-        showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
-        return;
-    }
-    showAccountView();
-});
-landingRegisterButton.addEventListener('click', () => {
-    if (currentUser) {
-        showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
-        return;
-    }
-    showAccountView();
-    toggleAuthForms(false);
-});
-backToLandingAuth.addEventListener('click', showLanding);
-backToLandingMarketplace.addEventListener('click', showLanding);
-logoutButton.addEventListener('click', logoutUser);
-saveAccountButton.addEventListener('click', saveAccountInfo);
-logoutAccountButton.addEventListener('click', logoutUser);
-showPostFormButton.addEventListener('click', togglePostForm);
-loginButton.addEventListener('click', loginUser);
-registerButton.addEventListener('click', registerUser);
-postAdButton.addEventListener('click', postAd);
-searchButton.addEventListener('click', performSearch);
-clearSearchButton.addEventListener('click', clearSearch);
-if (filterUniversitySelect) {
-    filterUniversitySelect.addEventListener('change', performSearch);
+    saveAdButton.addEventListener('click', saveEditedAd);
+    cancelEditButton.addEventListener('click', cancelEditAd);
+    closeListingDetailButton.addEventListener('click', closeListingDetail);
 }
-if (filterPriceSelect) {
-    filterPriceSelect.addEventListener('change', performSearch);
-}
-saveAdButton.addEventListener('click', saveEditedAd);
-cancelEditButton.addEventListener('click', cancelEditAd);
-closeListingDetailButton.addEventListener('click', closeListingDetail);
 
 document.addEventListener('DOMContentLoaded', initializeApp);
