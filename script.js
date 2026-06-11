@@ -10,6 +10,8 @@ const showBrowseButton = document.getElementById('show-browse');
 const showPostFormButton = document.getElementById('show-post-form');
 const landingBrowseButton = document.getElementById('landing-browse');
 const landingAccountButton = document.getElementById('landing-account');
+const landingLoginButton = document.getElementById('landing-login');
+const landingRegisterButton = document.getElementById('landing-register');
 const backToLandingAuth = document.getElementById('back-to-landing-auth');
 const backToLandingMarketplace = document.getElementById('back-to-landing-marketplace');
 const authMessage = document.getElementById('auth-message');
@@ -29,6 +31,8 @@ const itemImageInput = document.getElementById('item-image');
 const itemUniversityInput = document.getElementById('item-university');
 const itemLocationInput = document.getElementById('item-location');
 const itemStatusInput = document.getElementById('item-status');
+const itemPhoneInput = document.getElementById('item-phone');
+const itemEmailInput = document.getElementById('item-email');
 const myAdsContainer = document.getElementById('my-ads-container');
 const editAdForm = document.getElementById('edit-ad-form');
 const editItemTitle = document.getElementById('edit-item-title');
@@ -38,6 +42,8 @@ const editItemLocation = document.getElementById('edit-item-location');
 const editItemUniversity = document.getElementById('edit-item-university');
 const editItemStatus = document.getElementById('edit-item-status');
 const editItemImage = document.getElementById('edit-item-image');
+const editItemPhone = document.getElementById('edit-item-phone');
+const editItemEmail = document.getElementById('edit-item-email');
 const saveAdButton = document.getElementById('save-ad-button');
 const cancelEditButton = document.getElementById('cancel-edit-button');
 const listingDetailModal = document.getElementById('listing-detail-modal');
@@ -295,6 +301,12 @@ function clearFormFields() {
     if (itemStatusInput) {
         itemStatusInput.value = 'selling';
     }
+    if (itemPhoneInput) {
+        itemPhoneInput.value = '';
+    }
+    if (itemEmailInput) {
+        itemEmailInput.value = '';
+    }
 }
 
 function readImageFile(file) {
@@ -312,6 +324,8 @@ async function postAd() {
     const description = document.getElementById('item-description').value.trim();
     const location = itemLocationInput ? itemLocationInput.value.trim() : '';
     const status = itemStatusInput ? itemStatusInput.value : 'selling';
+    const phone = itemPhoneInput ? itemPhoneInput.value.trim() : '';
+    const email = itemEmailInput ? itemEmailInput.value.trim() : '';
 
     if (!currentUser) {
         showMessage('Please log in before posting an ad.', 'error');
@@ -344,6 +358,8 @@ async function postAd() {
                 location,
                 university,
                 status,
+                phone,
+                email,
                 image: imageData
             }
         });
@@ -621,6 +637,11 @@ showRegisterButton.addEventListener('click', () => {
 showBrowseButton.addEventListener('click', showPublicBrowse);
 landingBrowseButton.addEventListener('click', showPublicBrowse);
 landingAccountButton.addEventListener('click', showAccountView);
+landingLoginButton.addEventListener('click', () => showAccountView());
+landingRegisterButton.addEventListener('click', () => {
+    showAccountView();
+    toggleAuthForms(false);
+});
 backToLandingAuth.addEventListener('click', showLanding);
 backToLandingMarketplace.addEventListener('click', showLanding);
 logoutButton.addEventListener('click', logoutUser);

@@ -18,11 +18,65 @@
     </header>
     <main>
         <section class="content landing-panel" id="landing-panel">
-            <h2>Welcome to AC Marketplace</h2>
-            <p>Explore public ads or sign in to manage your account and post items.</p>
-            <div class="landing-actions">
-                <button id="landing-browse" class="secondary">Browse Public Posts</button>
-                <button id="landing-account">View My Account</button>
+            <div class="landing-header">
+                <h2>Welcome to AC Marketplace</h2>
+                <p>Explore public ads or sign in to manage your account and post items.</p>
+            </div>
+            <div class="landing-container">
+                <div class="landing-actions">
+                    <div class="action-card">
+                        <h3>Browse Listings</h3>
+                        <p>Browse all public listings without logging in</p>
+                        <button id="landing-browse" class="action-btn primary">Browse Public Posts</button>
+                    </div>
+                    <div class="action-card">
+                        <h3>My Account</h3>
+                        <p>View your listings and account details</p>
+                        <button id="landing-account" class="action-btn">View My Account</button>
+                    </div>
+                    <div class="action-card">
+                        <h3>Sign In / Register</h3>
+                        <p>Create an account or log in to post items</p>
+                        <div class="auth-buttons">
+                            <button id="landing-login" class="action-btn secondary">Login</button>
+                            <button id="landing-register" class="action-btn secondary">Register</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="university-grid">
+                    <div class="university-card">
+                        <img src="image/toronto.jpg" alt="University of Toronto">
+                        <p class="university-label">University of Toronto</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/mcmaster.png" alt="McMaster University">
+                        <p class="university-label">McMaster University</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/waterloo.jpg" alt="University of Waterloo">
+                        <p class="university-label">University of Waterloo</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/western.png" alt="Western University">
+                        <p class="university-label">Western University</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/queens.png" alt="Queen's University">
+                        <p class="university-label">Queen's University</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/uottawa.png" alt="University of Ottawa">
+                        <p class="university-label">University of Ottawa</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/University-of-Alberta.webp" alt="University of Alberta">
+                        <p class="university-label">University of Alberta</p>
+                    </div>
+                    <div class="university-card">
+                        <img src="image/carlton.png" alt="Carleton University">
+                        <p class="university-label">Carleton University</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -155,6 +209,14 @@
                     </select>
                 </label>
                 <label>
+                    Phone Number (optional)
+                    <input type="tel" id="item-phone" placeholder="1-234-567-8900">
+                </label>
+                <label>
+                    Email (optional)
+                    <input type="email" id="item-email" placeholder="your@email.com">
+                </label>
+                <label>
                     Image
                     <input type="file" id="item-image" accept="image/*">
                 </label>
@@ -249,6 +311,14 @@
                         <option value="Royal Roads University">Royal Roads University</option>
                         <option value="Nipissing University">Nipissing University</option>
                     </select>
+                </label>
+                <label>
+                    Phone Number (optional)
+                    <input type="tel" id="edit-item-phone" placeholder="1-234-567-8900">
+                </label>
+                <label>
+                    Email (optional)
+                    <input type="email" id="edit-item-email" placeholder="your@email.com">
                 </label>
                 <label>
                     Image
