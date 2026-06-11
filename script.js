@@ -13,6 +13,12 @@ const landingAccountButton = document.getElementById('landing-account');
 const landingLoginButton = document.getElementById('landing-login');
 const landingRegisterButton = document.getElementById('landing-register');
 const backToLandingAuth = document.getElementById('back-to-landing-auth');
+const accountProfile = document.getElementById('account-profile');
+const accountUsername = document.getElementById('account-username');
+const accountPhone = document.getElementById('account-phone');
+const accountEmail = document.getElementById('account-email');
+const saveAccountButton = document.getElementById('save-account-button');
+const logoutAccountButton = document.getElementById('logout-account-button');
 const backToLandingMarketplace = document.getElementById('back-to-landing-marketplace');
 const authMessage = document.getElementById('auth-message');
 const loginForm = document.getElementById('login-form');
@@ -27,6 +33,8 @@ const postAdButton = document.getElementById('post-ad-button');
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 const clearSearchButton = document.getElementById('clear-search');
+const filterUniversitySelect = document.getElementById('filter-university');
+const filterPriceSelect = document.getElementById('filter-price');
 const itemImageInput = document.getElementById('item-image');
 const itemUniversityInput = document.getElementById('item-university');
 const itemLocationInput = document.getElementById('item-location');
@@ -51,7 +59,11 @@ const closeListingDetailButton = document.getElementById('close-listing-detail')
 const listingDetailContainer = document.getElementById('listing-detail-container');
 
 let activeSearchTerm = '';
+let activeUniversityFilter = '';
+let activePriceFilter = '';
 let currentUser = null;
+let currentUserPhone = null;
+let currentUserEmail = null;
 let currentEditingAdId = null;
 
 async function apiRequest(endpoint, options = {}) {
@@ -79,9 +91,20 @@ async function apiRequest(endpoint, options = {}) {
 function showMessage(message, type = 'info') {
     authMessage.textContent = message;
     authMessage.style.display = 'block';
-    authMessage.style.backgroundColor = type === 'error' ? '#fed7d7' : '#e6fffa';
-    authMessage.style.borderColor = type === 'error' ? '#fc8181' : '#81e6d9';
-    authMessage.style.color = type === 'error' ? '#742a2a' : '#2c7a7b';
+    
+    if (type === 'error') {
+        authMessage.style.backgroundColor = '#fed7d7';
+        authMessage.style.borderColor = '#fc8181';
+        authMessage.style.color = '#742a2a';
+    } else if (type === 'success') {
+        authMessage.style.backgroundColor = '#c6f6d5';
+        authMessage.style.borderColor = '#9ae6b4';
+        authMessage.style.color = '#22543d';
+    } else {
+        authMessage.style.backgroundColor = '#e6fffa';
+        authMessage.style.borderColor = '#81e6d9';
+        authMessage.style.color = '#2c7a7b';
+    }
 }
 
 function clearMessage() {
@@ -93,13 +116,19 @@ function updateAuthState() {
     if (currentUser) {
         loginForm.classList.add('hidden');
         registerForm.classList.add('hidden');
+        accountProfile.classList.remove('hidden');
         logoutButton.classList.remove('hidden');
+        accountUsername.textContent = `Username: ${currentUser}`;
+        accountPhone.value = currentUserPhone || '';
+        accountEmail.value = currentUserEmail || '';
         currentUserLabel.textContent = `Logged in as ${currentUser}`;
         postAdForm.classList.remove('hidden');
         marketplacePanel.classList.remove('hidden');
+        autoFillContactInfo();
     } else {
         loginForm.classList.add('hidden');
         registerForm.classList.add('hidden');
+        accountProfile.classList.add('hidden');
         logoutButton.classList.add('hidden');
         currentUserLabel.textContent = '';
         postAdForm.classList.add('hidden');
@@ -110,24 +139,56 @@ async function loadCurrentUser() {
     try {
         const data = await apiRequest('/api/auth/me', { method: 'GET' });
         currentUser = data.username;
+        currentUserPhone = data.phone || null;
+        currentUserEmail = data.email || null;
     } catch {
         currentUser = null;
+        currentUserPhone = null;
+        currentUserEmail = null;
+    }
     }
     updateAuthState();
 }
 
-async function fetchAds(filterTerm = '') {
-    const query = filterTerm.trim();
+async function fetchAds(searchTerm = '', university = '', priceRange = '') {
+    const query = searchTerm.trim();
     const endpoint = query ? `/api/ads?search=${encodeURIComponent(query)}` : '/api/ads';
     const data = await apiRequest(endpoint, { method: 'GET' });
-    return data.ads || [];
+    let ads = data.ads || [];
+    
+    // Client-side filtering
+    if (university) {
+        ads = ads.filter(ad => ad.university === university);
+    }
+    
+    if (priceRange) {
+        ads = ads.filter(ad => {
+            const price = parseFloat(ad.price.replace(/[^0-9.]/g, ''));
+            switch(priceRange) {
+                case '0-50':
+                    return price >= 0 && price < 50;
+                case '50-100':
+                    return price >= 50 && price < 100;
+                case '100-250':
+                    return price >= 100 && price < 250;
+                case '250-500':
+                    return price >= 250 && price < 500;
+                case '500+':
+                    return price >= 500;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    return ads;
 }
 
-async function renderAds(filterTerm = '') {
+async function renderAds(searchTerm = '', university = '', priceRange = '') {
     try {
-        const ads = await fetchAds(filterTerm);
+        const ads = await fetchAds(searchTerm, university, priceRange);
         if (ads.length === 0) {
-            adsContainer.innerHTML = '<p>No ads match your search yet. Try a different keyword or clear the filter.</p>';
+            adsContainer.innerHTML = '<p>No ads match your search yet. Try a different keyword or clear the filters.</p>';
             return;
         }
 
@@ -198,14 +259,51 @@ function showPublicBrowse() {
     authPanel.classList.add('hidden');
     marketplacePanel.classList.remove('hidden');
     updateAuthState();
-    renderAds(activeSearchTerm);
+    renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
+}
+
+function autoFillContactInfo() {
+    const phoneField = document.getElementById('item-phone');
+    const emailField = document.getElementById('item-email');
+    
+    if (phoneField && currentUserPhone) {
+        phoneField.value = currentUserPhone;
+    }
+    if (emailField && currentUserEmail) {
+        emailField.value = currentUserEmail;
+    }
+}
+
+async function saveAccountInfo() {
+    const phone = accountPhone.value.trim();
+    const email = accountEmail.value.trim();
+
+    try {
+        const data = await apiRequest('/api/auth/update-profile', {
+            method: 'POST',
+            body: {
+                phone,
+                email
+            }
+        });
+        currentUserPhone = phone;
+        currentUserEmail = email;
+        showMessage('Account information saved successfully!', 'success');
+        autoFillContactInfo();
+    } catch (error) {
+        showMessage(error.message || 'Failed to save account information', 'error');
+    }
 }
 
 function showAccountView() {
     landingPanel.classList.add('hidden');
     marketplacePanel.classList.add('hidden');
     authPanel.classList.remove('hidden');
-    toggleAuthForms(true);
+    if (currentUser) {
+        updateAuthState();
+    } else {
+        toggleAuthForms(true);
+    }
     clearMessage();
 }
 
@@ -215,6 +313,9 @@ function togglePostForm() {
         return;
     }
     postAdForm.classList.toggle('hidden');
+    if (!postAdForm.classList.contains('hidden')) {
+        autoFillContactInfo();
+    }
 }
 
 async function registerUser() {
@@ -235,7 +336,7 @@ async function registerUser() {
         clearFormFields();
         showMessage('Registration successful. You are now logged in.');
         updateAuthState();
-        renderAds(activeSearchTerm);
+        renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
         renderUserAds();
     } catch (error) {
         showMessage(error.message, 'error');
@@ -257,11 +358,13 @@ async function loginUser() {
             body: { username, password }
         });
         currentUser = data.username;
+        currentUserPhone = data.phone || null;
+        currentUserEmail = data.email || null;
         clearFormFields();
         showMessage('Login successful. Welcome back!');
         updateAuthState();
         marketplacePanel.classList.remove('hidden');
-        renderAds(activeSearchTerm);
+        renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
         renderUserAds();
     } catch (error) {
         showMessage(error.message, 'error');
@@ -275,8 +378,11 @@ async function logoutUser() {
         // ignore
     }
     currentUser = null;
+    currentUserPhone = null;
+    currentUserEmail = null;
     updateAuthState();
     renderUserAds();
+    renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
     showMessage('You have been logged out.');
     toggleAuthForms(true);
 }
@@ -365,7 +471,7 @@ async function postAd() {
         });
         clearFormFields();
         showMessage('Your ad has been posted successfully.');
-        renderAds(activeSearchTerm);
+        renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
         renderUserAds();
         if (!postAdForm.classList.contains('hidden')) {
             postAdForm.classList.add('hidden');
@@ -377,13 +483,19 @@ async function postAd() {
 
 function performSearch() {
     activeSearchTerm = searchInput.value;
-    renderAds(activeSearchTerm);
+    activeUniversityFilter = filterUniversitySelect.value;
+    activePriceFilter = filterPriceSelect.value;
+    renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
 }
 
 function clearSearch() {
     activeSearchTerm = '';
+    activeUniversityFilter = '';
+    activePriceFilter = '';
     searchInput.value = '';
-    renderAds('');
+    filterUniversitySelect.value = '';
+    filterPriceSelect.value = '';
+    renderAds('', '', '');
 }
 
 async function fetchUserAds() {
@@ -560,7 +672,7 @@ async function saveEditedAd() {
         showMessage('Your ad has been updated successfully.');
         cancelEditAd();
         renderUserAds();
-        renderAds(activeSearchTerm);
+        renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
     } catch (error) {
         showMessage(error.message, 'error');
     }
@@ -578,7 +690,7 @@ async function deleteAd(adId) {
 
         showMessage('Your ad has been deleted successfully.');
         renderUserAds();
-        renderAds(activeSearchTerm);
+        renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
     } catch (error) {
         showMessage(error.message, 'error');
     }
@@ -589,7 +701,8 @@ function initializeApp() {
     clearMessage();
     showLanding();
     loadCurrentUser();
-    renderAds(activeSearchTerm);
+    updateAuthState();
+    renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
     renderUserAds();
     attachFormShortcuts();
 }
@@ -629,28 +742,52 @@ function attachFormShortcuts() {
     });
 }
 
-showLoginButton.addEventListener('click', () => showAccountView());
+showLoginButton.addEventListener('click', () => {
+    if (currentUser) {
+        showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
+        return;
+    }
+    showAccountView();
+});
 showRegisterButton.addEventListener('click', () => {
+    if (currentUser) {
+        showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
+        return;
+    }
     showAccountView();
     toggleAuthForms(false);
 });
 showBrowseButton.addEventListener('click', showPublicBrowse);
 landingBrowseButton.addEventListener('click', showPublicBrowse);
 landingAccountButton.addEventListener('click', showAccountView);
-landingLoginButton.addEventListener('click', () => showAccountView());
+landingLoginButton.addEventListener('click', () => {
+    if (currentUser) {
+        showMessage('You are already logged in. Please logout first if you want to login with a different account.', 'info');
+        return;
+    }
+    showAccountView();
+});
 landingRegisterButton.addEventListener('click', () => {
+    if (currentUser) {
+        showMessage('You are already logged in. Please logout first if you want to create a new account.', 'info');
+        return;
+    }
     showAccountView();
     toggleAuthForms(false);
 });
 backToLandingAuth.addEventListener('click', showLanding);
 backToLandingMarketplace.addEventListener('click', showLanding);
 logoutButton.addEventListener('click', logoutUser);
+saveAccountButton.addEventListener('click', saveAccountInfo);
+logoutAccountButton.addEventListener('click', logoutUser);
 showPostFormButton.addEventListener('click', togglePostForm);
 loginButton.addEventListener('click', loginUser);
 registerButton.addEventListener('click', registerUser);
 postAdButton.addEventListener('click', postAd);
 searchButton.addEventListener('click', performSearch);
 clearSearchButton.addEventListener('click', clearSearch);
+filterUniversitySelect.addEventListener('change', performSearch);
+filterPriceSelect.addEventListener('change', performSearch);
 saveAdButton.addEventListener('click', saveEditedAd);
 cancelEditButton.addEventListener('click', cancelEditAd);
 closeListingDetailButton.addEventListener('click', closeListingDetail);

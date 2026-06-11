@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AC Marketplace</title>
+    <title>Academic Marketplace</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>AC Marketplace</h1>
+        <h1>Academic Marketplace</h1>
         <nav>
             <button id="show-login">Login</button>
             <button id="show-register">Register</button>
@@ -19,7 +19,7 @@
     <main>
         <section class="content landing-panel" id="landing-panel">
             <div class="landing-header">
-                <h2>Welcome to AC Marketplace</h2>
+                <h2>Welcome to Academic Marketplace</h2>
                 <p>Explore public ads or sign in to manage your account and post items.</p>
             </div>
             <div class="landing-container">
@@ -107,6 +107,22 @@
                 </label>
                 <button id="register-button">Create Account</button>
             </div>
+            <div id="account-profile" class="auth-form hidden">
+                <h2>Account Settings</h2>
+                <p id="account-username" style="margin-bottom: 1rem; font-weight: 600;"></p>
+                <label>
+                    Phone Number
+                    <input type="tel" id="account-phone" placeholder="1-234-567-8900">
+                </label>
+                <label>
+                    Email Address
+                    <input type="email" id="account-email" placeholder="your@email.com">
+                </label>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button id="save-account-button">Save Account Info</button>
+                    <button id="logout-account-button" class="secondary">Logout</button>
+                </div>
+            </div>
         </section>
 
         <section class="content marketplace-panel hidden" id="marketplace-panel">
@@ -122,9 +138,76 @@
                 </div>
             </div>
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search ads by title, description, price, seller, university">
-                <button id="search-button">Search</button>
-                <button id="clear-search" class="secondary">Clear</button>
+                <div class="search-controls">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="search-input" placeholder="Search by title">
+                        <button id="search-button">Search</button>
+                    </div>
+                    <div class="filter-wrapper">
+                        <select id="filter-university">
+                            <option value="">All Universities</option>
+                            <option value="University of Toronto">University of Toronto</option>
+                            <option value="McGill University">McGill University</option>
+                            <option value="University of British Columbia">University of British Columbia</option>
+                            <option value="McMaster University">McMaster University</option>
+                            <option value="Université de Montréal">Université de Montréal</option>
+                            <option value="University of Alberta">University of Alberta</option>
+                            <option value="University of Waterloo">University of Waterloo</option>
+                            <option value="Western University">Western University</option>
+                            <option value="University of Calgary">University of Calgary</option>
+                            <option value="Queen's University">Queen's University</option>
+                            <option value="University of Ottawa">University of Ottawa</option>
+                            <option value="Simon Fraser University">Simon Fraser University</option>
+                            <option value="Dalhousie University">Dalhousie University</option>
+                            <option value="University of Saskatchewan">University of Saskatchewan</option>
+                            <option value="Université de Sherbrooke">Université de Sherbrooke</option>
+                            <option value="York University">York University</option>
+                            <option value="University of Guelph">University of Guelph</option>
+                            <option value="Concordia University">Concordia University</option>
+                            <option value="University of Victoria">University of Victoria</option>
+                            <option value="University of Manitoba">University of Manitoba</option>
+                            <option value="Carleton University">Carleton University</option>
+                            <option value="Memorial University of Newfoundland">Memorial University of Newfoundland</option>
+                            <option value="Ontario Tech University">Ontario Tech University</option>
+                            <option value="Toronto Metropolitan University">Toronto Metropolitan University</option>
+                            <option value="University of Windsor">University of Windsor</option>
+                            <option value="Brock University">Brock University</option>
+                            <option value="University of Regina">University of Regina</option>
+                            <option value="University of New Brunswick">University of New Brunswick</option>
+                            <option value="St. Francis Xavier University">St. Francis Xavier University</option>
+                            <option value="Lakehead University">Lakehead University</option>
+                            <option value="Laurentian University">Laurentian University</option>
+                            <option value="Wilfrid Laurier University">Wilfrid Laurier University</option>
+                            <option value="University of Prince Edward Island">University of Prince Edward Island</option>
+                            <option value="Trent University">Trent University</option>
+                            <option value="Vancouver Island University">Vancouver Island University</option>
+                            <option value="Athabasca University">Athabasca University</option>
+                            <option value="Mount Allison University">Mount Allison University</option>
+                            <option value="University of Lethbridge">University of Lethbridge</option>
+                            <option value="Thompson Rivers University">Thompson Rivers University</option>
+                            <option value="University of Northern British Columbia">University of Northern British Columbia</option>
+                            <option value="OCAD University">OCAD University</option>
+                            <option value="Bishop's University">Bishop's University</option>
+                            <option value="University of Winnipeg">University of Winnipeg</option>
+                            <option value="Redeemer University">Redeemer University</option>
+                            <option value="Université Laval">Université Laval</option>
+                            <option value="Université du Québec à Montréal">Université du Québec à Montréal</option>
+                            <option value="Université du Québec à Trois-Rivières">Université du Québec à Trois-Rivières</option>
+                            <option value="Université du Québec à Chicoutimi">Université du Québec à Chicoutimi</option>
+                            <option value="Royal Roads University">Royal Roads University</option>
+                            <option value="Nipissing University">Nipissing University</option>
+                        </select>
+                        <select id="filter-price">
+                            <option value="">All Prices</option>
+                            <option value="0-50">$0 - $50</option>
+                            <option value="50-100">$50 - $100</option>
+                            <option value="100-250">$100 - $250</option>
+                            <option value="250-500">$250 - $500</option>
+                            <option value="500+">$500+</option>
+                        </select>
+                        <button id="clear-search" class="secondary">Clear Filters</button>
+                    </div>
+                </div>
             </div>
             <div id="post-ad-form" class="post-form hidden">
                 <h3>Post an item</h3>
@@ -338,7 +421,7 @@
         </section>
     </main>
     <footer>
-        <p>&copy; 2026 AC Marketplace. All rights reserved.</p>
+        <p>&copy; 2026 Academic Marketplace. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
 </body>
