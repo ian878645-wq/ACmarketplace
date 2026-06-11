@@ -161,7 +161,6 @@ async function loadCurrentUser() {
         currentUserPhone = null;
         currentUserEmail = null;
     }
-    }
     updateAuthState();
 }
 
