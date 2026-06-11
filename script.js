@@ -154,8 +154,9 @@ async function loadCurrentUser() {
     try {
         const data = await apiRequest('/api/auth/me', { method: 'GET' });
         currentUser = data.username;
-        currentUserPhone = data.phone || null;
-        currentUserEmail = data.email || null;
+        // Try to load phone and email from local storage first
+        currentUserPhone = localStorage.getItem(`${currentUser}_phone`) || data.phone || null;
+        currentUserEmail = localStorage.getItem(`${currentUser}_email`) || data.email || null;
     } catch {
         currentUser = null;
         currentUserPhone = null;
@@ -207,7 +208,9 @@ async function renderAds(searchTerm = '', university = '', priceRange = '') {
         }
 
         adsContainer.innerHTML = ads
-            .map(ad => `
+            .map(ad => {
+                const hasInterest = currentUser && hasUserShowedInterest(ad.id, currentUser);
+                return `
                 <div class="ad-card ad-card-clickable" data-ad-id="${ad.id}" style="cursor: pointer;">
                     ${ad.image ? `<img src="${ad.image}" alt="${escapeHtml(ad.title)}">` : ''}
                     <h4>${escapeHtml(ad.title)}</h4>
@@ -219,12 +222,23 @@ async function renderAds(searchTerm = '', university = '', priceRange = '') {
                         <span class="status-badge status-${escapeHtml(ad.status || 'selling')}">Status: ${escapeHtml(ad.status || 'selling')}</span>
                     </div>
                     <p>${escapeHtml(ad.description)}</p>
+                    ${currentUser ? `<button class="interest-btn" data-ad-id="${ad.id}" style="margin-top: 0.5rem; ${hasInterest ? 'background-color: #276749;' : 'background-color: #4CAF50;'}">${hasInterest ? '✓ Interested' : 'Show Interest'}</button>` : ''}
                 </div>
-            `)
+            `;
+            })
             .join('');
         
         // Add click handlers to each ad card
         document.querySelectorAll('.ad-card-clickable').forEach(card => {
+            const interestBtn = card.querySelector('.interest-btn');
+            if (interestBtn) {
+                interestBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const adId = parseInt(interestBtn.getAttribute('data-ad-id'));
+                    toggleInterest(adId);
+                });
+            }
+            
             card.addEventListener('click', () => {
                 const adId = parseInt(card.getAttribute('data-ad-id'));
                 const ad = ads.find(a => a.id === adId);
@@ -248,6 +262,60 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return String(text).replace(/[&<>"']/g, function (m) { return map[m]; });
+}
+
+// Interest management functions
+function getInterestedBuyers(adId) {
+    const interested = localStorage.getItem(`interests_${adId}`);
+    return interested ? JSON.parse(interested) : [];
+}
+
+function addInterest(adId) {
+    const interests = getInterestedBuyers(adId);
+    const buyerInfo = {
+        username: currentUser,
+        phone: currentUserPhone || 'Not provided',
+        email: currentUserEmail || 'Not provided'
+    };
+    
+    // Check if already interested
+    if (!interests.some(b => b.username === currentUser)) {
+        interests.push(buyerInfo);
+        localStorage.setItem(`interests_${adId}`, JSON.stringify(interests));
+    }
+}
+
+function removeInterest(adId) {
+    const interests = getInterestedBuyers(adId);
+    const filtered = interests.filter(b => b.username !== currentUser);
+    if (filtered.length === 0) {
+        localStorage.removeItem(`interests_${adId}`);
+    } else {
+        localStorage.setItem(`interests_${adId}`, JSON.stringify(filtered));
+    }
+}
+
+function hasUserShowedInterest(adId, username) {
+    const interests = getInterestedBuyers(adId);
+    return interests.some(b => b.username === username);
+}
+
+function toggleInterest(adId) {
+    if (!currentUser) {
+        showMessage('Please log in to show interest.', 'error');
+        return;
+    }
+    
+    if (hasUserShowedInterest(adId, currentUser)) {
+        removeInterest(adId);
+        showMessage('Interest removed.');
+    } else {
+        addInterest(adId);
+        showMessage('Interest saved! The seller will see your contact info.', 'success');
+    }
+    
+    // Re-render ads to update button state
+    renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
 }
 
 function toggleAuthForms(showLogin = true) {
@@ -292,21 +360,16 @@ async function saveAccountInfo() {
     const phone = accountPhone.value.trim();
     const email = accountEmail.value.trim();
 
-    try {
-        const data = await apiRequest('/api/auth/update-profile', {
-            method: 'POST',
-            body: {
-                phone,
-                email
-            }
-        });
-        currentUserPhone = phone;
-        currentUserEmail = email;
-        showMessage('Account information saved successfully!', 'success');
-        autoFillContactInfo();
-    } catch (error) {
-        showMessage(error.message || 'Failed to save account information', 'error');
+    // Save to local storage
+    if (currentUser) {
+        localStorage.setItem(`${currentUser}_phone`, phone);
+        localStorage.setItem(`${currentUser}_email`, email);
     }
+    
+    currentUserPhone = phone;
+    currentUserEmail = email;
+    showMessage('Account information saved successfully!', 'success');
+    autoFillContactInfo();
 }
 
 function showAccountView() {
@@ -540,23 +603,42 @@ async function renderUserAds() {
         }
 
         myAdsContainer.innerHTML = ads
-            .map(ad => `
-                <div class="ad-card">
-                    ${ad.image ? `<img src="${ad.image}" alt="${escapeHtml(ad.title)}">` : ''}
-                    <h4>${escapeHtml(ad.title)}</h4>
-                    <div class="ad-meta">
-                        <span>University: ${escapeHtml(ad.university || 'Not specified')}</span>
-                        <span>Location: ${escapeHtml(ad.location || 'Not specified')}</span>
-                        <span>Price: ${escapeHtml(ad.price)}</span>
-                        <span class="status-badge status-${escapeHtml(ad.status || 'selling')}">Status: ${escapeHtml(ad.status || 'selling')}</span>
+            .map(ad => {
+                const interested = getInterestedBuyers(ad.id);
+                const interestedHtml = interested.length > 0 ? `
+                    <div style="margin-top: 1rem; padding: 0.75rem; background-color: #f0f9ff; border-radius: 5px; border-left: 4px solid #4CAF50;">
+                        <strong style="color: #276749;">👥 ${interested.length} buyer(s) interested</strong>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            ${interested.map(buyer => `
+                                <div style="margin-top: 0.5rem; padding: 0.5rem; background-color: white; border-radius: 3px;">
+                                    <strong>${escapeHtml(buyer.username)}</strong><br>
+                                    📱 ${escapeHtml(buyer.phone)}<br>
+                                    ✉️ ${escapeHtml(buyer.email)}
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                    <p>${escapeHtml(ad.description)}</p>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <button onclick="startEditAd(${ad.id})">Edit</button>
-                        <button onclick="deleteAd(${ad.id})" class="secondary" style="background-color: #e53e3e;">Delete</button>
+                ` : '';
+                
+                return `
+                    <div class="ad-card">
+                        ${ad.image ? `<img src="${ad.image}" alt="${escapeHtml(ad.title)}">` : ''}
+                        <h4>${escapeHtml(ad.title)}</h4>
+                        <div class="ad-meta">
+                            <span>University: ${escapeHtml(ad.university || 'Not specified')}</span>
+                            <span>Location: ${escapeHtml(ad.location || 'Not specified')}</span>
+                            <span>Price: ${escapeHtml(ad.price)}</span>
+                            <span class="status-badge status-${escapeHtml(ad.status || 'selling')}">Status: ${escapeHtml(ad.status || 'selling')}</span>
+                        </div>
+                        <p>${escapeHtml(ad.description)}</p>
+                        ${interestedHtml}
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button onclick="startEditAd(${ad.id})">Edit</button>
+                            <button onclick="deleteAd(${ad.id})" class="secondary" style="background-color: #e53e3e;">Delete</button>
+                        </div>
                     </div>
-                </div>
-            `)
+                `;
+            })
             .join('');
     } catch (error) {
         myAdsContainer.innerHTML = '<p>Unable to load your listings.</p>';
