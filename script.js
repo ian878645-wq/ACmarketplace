@@ -483,8 +483,8 @@ async function postAd() {
 
 function performSearch() {
     activeSearchTerm = searchInput.value;
-    activeUniversityFilter = filterUniversitySelect.value;
-    activePriceFilter = filterPriceSelect.value;
+    activeUniversityFilter = filterUniversitySelect ? filterUniversitySelect.value : '';
+    activePriceFilter = filterPriceSelect ? filterPriceSelect.value : '';
     renderAds(activeSearchTerm, activeUniversityFilter, activePriceFilter);
 }
 
@@ -493,8 +493,12 @@ function clearSearch() {
     activeUniversityFilter = '';
     activePriceFilter = '';
     searchInput.value = '';
-    filterUniversitySelect.value = '';
-    filterPriceSelect.value = '';
+    if (filterUniversitySelect) {
+        filterUniversitySelect.value = '';
+    }
+    if (filterPriceSelect) {
+        filterPriceSelect.value = '';
+    }
     renderAds('', '', '');
 }
 
@@ -786,8 +790,12 @@ registerButton.addEventListener('click', registerUser);
 postAdButton.addEventListener('click', postAd);
 searchButton.addEventListener('click', performSearch);
 clearSearchButton.addEventListener('click', clearSearch);
-filterUniversitySelect.addEventListener('change', performSearch);
-filterPriceSelect.addEventListener('change', performSearch);
+if (filterUniversitySelect) {
+    filterUniversitySelect.addEventListener('change', performSearch);
+}
+if (filterPriceSelect) {
+    filterPriceSelect.addEventListener('change', performSearch);
+}
 saveAdButton.addEventListener('click', saveEditedAd);
 cancelEditButton.addEventListener('click', cancelEditAd);
 closeListingDetailButton.addEventListener('click', closeListingDetail);
