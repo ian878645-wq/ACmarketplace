@@ -22,7 +22,22 @@ app.use(session({
 async function loadData() {
   try {
     const raw = await fs.readFile(DATA_FILE, 'utf8');
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    
+    // Migrate old ads without IDs
+    if (data.ads && Array.isArray(data.ads)) {
+      let maxId = data.nextAdId || 1;
+      data.ads.forEach(ad => {
+        if (!ad.id) {
+          ad.id = maxId++;
+        } else if (ad.id >= maxId) {
+          maxId = ad.id + 1;
+        }
+      });
+      data.nextAdId = maxId;
+    }
+    
+    return data;
   } catch (error) {
     if (error.code === 'ENOENT') {
       return JSON.parse(JSON.stringify(DEFAULT_DATA));

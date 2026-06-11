@@ -13,46 +13,54 @@ A simple university student marketplace for buying and selling items. Built with
 
 ## Local Testing
 
-To run locally, use Python's built-in server:
+Install dependencies and run the backend server:
 
 ```bash
-python -m http.server 8000
+npm install
+npm start
 ```
 
-Then visit `http://localhost:8000` in your browser.
+Then visit `http://localhost:3000` in your browser.
+
+This starts the Express server from `server.js`, which serves the static site and provides shared backend storage for accounts and ads.
 
 ## Deploy to Internet
 
-### Option 1: GitHub Pages (Recommended)
+### Option 1: Deploy to a Node.js host
 
-1. Create a new GitHub repository named `ac-marketplace`
-2. Initialize git in your local folder:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/ac-marketplace.git
-   git push -u origin main
-   ```
-3. Go to your repository settings → Pages
-4. Set "Source" to `main` branch, `/root` directory
-5. Your site will be live at `https://YOUR_USERNAME.github.io/ac-marketplace`
+Because this version now includes a backend, GitHub Pages is no longer a complete deployment option by itself.                                                                                                                                                                                                                                                                          
 
-### Option 2: Netlify (Drag and Drop)
+- Render
+- Railway
+- Fly.io
+- Heroku
 
-1. Go to [netlify.com](https://netlify.com)
-2. Sign in (free account)
-3. Drag and drop your project folder
-4. Your site is automatically deployed with a live URL
+For local deployment to a Node host, push the repository and connect it to your service. The app will run from `server.js`.
 
-### Option 3: Vercel
+### Option 2: Keep the app local
 
-1. Go to [vercel.com](https://vercel.com)
-2. Sign in (free account)
-3. Click "New Project" → "Import Git Repository"
-4. Select your GitHub repository
-5. Deploy
+If you only need to run it locally, use:
+
+```bash
+npm install
+npm start
+```
+
+Then open `http://localhost:3000`.
+
+## Data Storage
+
+- Accounts and ads are now stored on the backend in `db.json`
+- Data is shared across devices that connect to the same running server
+- Sessions are tracked in the browser using cookies
+
+## File Structure
+
+- `index.html` - Main page structure
+- `script.js` - Frontend application logic
+- `style.css` - Styling and layout
+- `server.js` - Node.js backend service
+- `db.json` - Shared storage for users and ads
 
 ## Data Storage
 
